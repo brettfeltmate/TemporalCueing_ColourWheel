@@ -115,7 +115,9 @@ class TemporalCueing_ColourWheel(klibs.Experiment):
         self.mask = self.generate_mask()
 
         # randomize wheel & target properties
-        self.wheel.rotation = random.randrange(0, 360)                               
+        self.wheel.rotation = random.randrange(0, 360)
+        self.wheel.render()                               
+        
         self.target_colour  = self.wheel.color_from_angle(random.randrange(0, 360))  # (const lum)
         self.target.fill    = self.target_colour                                     
         
@@ -156,7 +158,7 @@ class TemporalCueing_ColourWheel(klibs.Experiment):
         flip()
 
         # prevent early start
-        allow_init_at = now() + (random.uniform(WARN_TIME_RANGE) / 1000)  # ms to s
+        allow_init_at = now() + (random.uniform(WARN_TIME_RANGE[0], WARN_TIME_RANGE[1]) / 1000)  # ms to s
         
         while now() < allow_init_at:
             ui_request()  
@@ -287,7 +289,7 @@ class TemporalCueing_ColourWheel(klibs.Experiment):
             acc = 1 - abs(angle_err) / 360
 
             message(
-                msg          = f"Accuracy: {acc*100:.0f}%",  # percentage
+                text         = f"Accuracy: {acc*100:.0f}%",  # percentage
                 style        = "alert",
                 registration = 5,                            # center-justified
                 location     = [P.screen_c[0], 
@@ -296,7 +298,7 @@ class TemporalCueing_ColourWheel(klibs.Experiment):
 
             # token labels
             message(
-                msg          = "Actual", 
+                text         = "Actual", 
                 style        = "alert",
                 registration = 6, # right-justified
                 location     = [P.screen_c[0]-deg_to_px(BOX_SIZE_DEG) / 2, 
@@ -304,7 +306,7 @@ class TemporalCueing_ColourWheel(klibs.Experiment):
             )
 
             message(
-                mes          = "Response", 
+                text         = "Response", 
                 style        = "alert",
                 registration = 4, # left-justified
                 location     = [P.screen_c[0]+deg_to_px(BOX_SIZE_DEG) / 2, 
