@@ -96,6 +96,9 @@ class TemporalCueing_ColourWheel(klibs.Experiment):
 
 
     def block(self):
+
+
+
         block_text = f"Block {P.block_number} of {P.blocks_per_experiment}"
 
         if P.practicing:
@@ -138,22 +141,20 @@ class TemporalCueing_ColourWheel(klibs.Experiment):
         self.evm.add_event("response_period", MASK_OFFSET_WHEEL_ONSET,  after="mask_off")
 
 
-        # cue foreperiod
-        fill()
 
-        if self.warning == "short":
-            message(
-                SHORTCUE if self.warning_validity == "valid" else LONGCUE, 
-                location = P.screen_c, 
-                style    = "alert"
-            )
-        
+        # Trial factors determine warning presented
+        if self.warning_validity == "valid":
+            self.warning_text = SHORTCUE if self.foreperiod == 400 else LONGCUE
+
         else:
-            message(
-                LONGCUE  if self.warning_validity == "valid" else SHORTCUE, 
-                location = P.screen_c, 
-                style    = "alert"
-            )
+            self.warning_text = LONGCUE if self.foreperiod == 400 else SHORTCUE
+
+        # present warning signal pre-trial
+        message(
+            text     = self.warning_text, 
+            location = P.screen_c, 
+            style    = "alert"
+        )
         
         flip()
 
@@ -240,7 +241,7 @@ class TemporalCueing_ColourWheel(klibs.Experiment):
             "block_num":              P.block_number,
             "trial_num":              P.trial_number,
             "practicing":             P.practicing,
-            "warning_type":           self.warning,
+            "warning_type":           self.warning_text,
             "warning_validity":       self.warning_validity,
             "foreperiod":             self.foreperiod,
             "tone_onset":             self.tone_onset,
@@ -272,16 +273,16 @@ class TemporalCueing_ColourWheel(klibs.Experiment):
             
 
             blit(
-                actual, 
-                location = [P.screen_c[0]-deg_to_px(BOX_SIZE_DEG),  # x,y
-                            P.screen_c[1]], 
+                source       = actual, 
+                location     = [P.screen_c[0]-deg_to_px(BOX_SIZE_DEG),  # x,y
+                                P.screen_c[1]], 
                 registration = 5
             )
 
             blit(
-                response, 
-                location = [P.screen_c[0]+deg_to_px(BOX_SIZE_DEG), 
-                            P.screen_c[1]], 
+                source       = response, 
+                location     = [P.screen_c[0]+deg_to_px(BOX_SIZE_DEG), 
+                                P.screen_c[1]], 
                 registration = 5
             )
 
